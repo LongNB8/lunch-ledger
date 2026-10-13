@@ -1,0 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+export function ConfirmAction({ open, title, description, confirmLabel, busy = false, onCancel, onConfirm }: { open: boolean; title: string; description: string; confirmLabel: string; busy?: boolean; onCancel: () => void; onConfirm: () => void }) {
+  return <Dialog open={open} onOpenChange={value => { if (!value && !busy) onCancel(); }}><DialogContent><DialogTitle>{title}</DialogTitle><DialogDescription className="break-words leading-7">{description}</DialogDescription><div className="flex flex-wrap justify-end gap-3"><Button variant="outline" disabled={busy} onClick={onCancel}>Hủy</Button><Button disabled={busy} onClick={onConfirm}>{busy ? 'Đang xử lý…' : confirmLabel}</Button></div></DialogContent></Dialog>;
+}
