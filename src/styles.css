@@ -699,12 +699,17 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation: none !important; transition: none !important; } }
 
 /* Compact meal choices and an itemized tax receipt. */
-.meal-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-.meal-preset,.tax-preset { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); font-size: 13px; font-weight: 400; cursor: pointer; }
+.meal-presets { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 6px; }
+.meal-preset,.tax-preset { position: relative; display: grid; grid-template-columns: 20px minmax(0,1fr) 15px; align-items: center; gap: 10px; min-height: 62px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); font-size: 13px; font-weight: 500; cursor: pointer; }
 .meal-preset:hover,.tax-preset:hover { border-color: var(--primary); }
-.meal-preset[data-selected=true],.tax-preset[data-selected=true] { background: var(--secondary); border-color: var(--primary); color: var(--primary); }
-.meal-preset [role=radio],.tax-preset [role=radio] { width: 15px; height: 15px; flex-shrink: 0; }
-.meal-preset span { line-height: 1.4; }
+.meal-preset[data-selected=true],.tax-preset[data-selected=true] { background: var(--secondary); border-color: var(--primary); color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.meal-preset:focus-within,.tax-preset:focus-within { outline: 2px solid var(--primary); outline-offset: 3px; }
+.meal-preset .choice-radio,.tax-preset .choice-radio { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; overflow: hidden; }
+.choice-icon { color: var(--muted-foreground); }
+.meal-preset[data-selected=true] .choice-icon { color: var(--primary); }
+.choice-check { visibility: hidden; color: var(--primary); }
+[data-selected=true]>.choice-check { visibility: visible; }
+.meal-preset>span { line-height: 1.45; overflow-wrap: anywhere; }
 .meal-builder .form-section:first-child { border-top: 0; padding-top: 0; }
 .meal-item { box-shadow: none; border-left: 3px solid var(--primary); }
 .meal-item .field { min-width: 0; }
@@ -712,8 +717,9 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 .tax-heading .builder-title { margin: 0; }
 .tax-select { width: 155px; min-height: 44px; background: var(--card); box-shadow: none; }
 .tax-options { display: grid; grid-template-columns: minmax(0,1fr) 150px; gap: 20px; align-items: end; margin-top: 20px; }
-.tax-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.tax-preset { justify-content: center; min-height: 48px; font-weight: 600; font-size: 16px; }
+.tax-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; background: var(--muted); border: 1px solid var(--border); border-radius: 8px; }
+.tax-preset { grid-template-columns: minmax(0,1fr) 15px; gap: 6px; min-height: 44px; padding: 10px; border-color: transparent; background: transparent; text-align: center; font-weight: 600; font-size: 16px; border-radius: 6px; }
+.tax-preset[data-selected=true] { background: var(--card); box-shadow: var(--shadow-soft); border-color: var(--border); }
 .tax-input-wrap { position: relative; }
 .tax-input-wrap input { padding-right: 36px; }
 .tax-input-wrap>span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); }
@@ -733,3 +739,5 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 .member-share>span:nth-child(2) { overflow-wrap: anywhere; }
 .member-share strong { font-variant-numeric: tabular-nums; }
 @media(max-width:400px) { .tax-options { grid-template-columns: minmax(0,1fr) 110px; gap: 12px; } .tax-preset { padding: 10px 8px; gap: 6px; } .meal-grand-total dd { font-size: 25px; } }
+@media(min-width:480px) and (max-width:1023px) { .meal-presets { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(prefers-reduced-motion:no-preference) { .meal-preset,.tax-preset { transition: background .18s ease,border-color .18s ease,box-shadow .18s ease; } }

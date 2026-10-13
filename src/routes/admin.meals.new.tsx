@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useBlocker, useNavigate } from '@tanstack/react-router';
 import { useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Camera, Check, Loader2, Plus, Trash2, Users, Search, Utensils, ReceiptText, Percent } from 'lucide-react';
+import { Camera, Check, Loader2, Plus, Trash2, Users, Search, Utensils, ReceiptText, Percent, Soup, Coffee } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -124,7 +124,10 @@ function MealForm({ userId }: { userId: string }) {
           <div className="field">
             <label htmlFor="meal-name">Tên bữa ăn *</label>
             <input id="meal-name" value={name} onChange={e => setName(e.target.value)} placeholder="Nhập tên hoặc chọn bên dưới" maxLength={120}/>
-            <RadioGroup aria-label="Tên có sẵn" className="meal-presets" value={presets.find(p => name === withDay(p, date)) ?? ''} onValueChange={p => setName(withDay(p, date))}>{presets.map((p, index) => <label key={p} htmlFor={`meal-preset-${index}`} className="meal-preset" data-selected={name === withDay(p, date)}><RadioGroupItem id={`meal-preset-${index}`} value={p}/><span>{p}</span></label>)}</RadioGroup>
+            <RadioGroup aria-label="Tên có sẵn" className="meal-presets" value={presets.find(p => name === withDay(p, date)) ?? ''} onValueChange={p => setName(withDay(p, date))}>{presets.map((p, index) => {
+              const Icon = /trà|cà phê/i.test(p) ? Coffee : /bún|phở|lẩu/i.test(p) ? Soup : Utensils;
+              return <label key={p} htmlFor={`meal-preset-${index}`} className="meal-preset" data-selected={name === withDay(p, date)}><RadioGroupItem className="choice-radio" id={`meal-preset-${index}`} value={p}/><Icon className="choice-icon" size={19} aria-hidden="true"/><span>{p}</span><Check className="choice-check" size={15} aria-hidden="true"/></label>;
+            })}</RadioGroup>
           </div>
           <label className="field">Ngày ăn<input type="date" value={date} onChange={e => changeDate(e.target.value)}/></label>
         </div>
@@ -135,7 +138,7 @@ function MealForm({ userId }: { userId: string }) {
       <div className="form-section">
         <div className="dish-heading"><h2 className="builder-title"><span>02</span>Danh sách món <small>{items.length}</small></h2>
           <input ref={fileRef} type="file" accept="image/*" capture="environment" hidden onChange={e => onScan(e.target.files?.[0])}/>
-          <Button className="h-12 w-full sm:w-auto" onClick={() => fileRef.current?.click()} disabled={scanning}>{scanning ? <Loader2 className="animate-spin"/> : <Camera/>}{scanning ? 'Đang đọc hóa đơn…' : 'Chụp hóa đơn'}</Button></div>
+          <Button variant="outline" className="h-12 w-full sm:w-auto" onClick={() => fileRef.current?.click()} disabled={scanning}>{scanning ? <Loader2 className="animate-spin"/> : <Camera/>}{scanning ? 'Đang đọc hóa đơn…' : 'Chụp hóa đơn'}</Button></div>
         <div className="grid gap-3">
            {items.length === 0 && <div className="dish-empty"><Utensils size={30}/><h3>Chưa có món ăn</h3></div>}
            {items.map(i => <div key={i.key} className="meal-item">
@@ -151,7 +154,7 @@ function MealForm({ userId }: { userId: string }) {
 
       <div className="form-section meal-tax-section">
         <div className="tax-heading"><h2 className="builder-title"><Percent size={19}/>Thuế VAT</h2><Select value={hasTax ? 'yes' : 'no'} onValueChange={value => setHasTax(value === 'yes')}><SelectTrigger aria-label="Áp dụng thuế" className="tax-select"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="no">Không thuế</SelectItem><SelectItem value="yes">Có thuế</SelectItem></SelectContent></Select></div>
-        {hasTax && <div className="tax-options"><RadioGroup aria-label="Mức thuế" className="tax-presets" value={taxRate} onValueChange={setTaxRate}>{['8', '10'].map(rate => <label key={rate} htmlFor={`tax-${rate}`} className="tax-preset" data-selected={taxRate === rate}><RadioGroupItem id={`tax-${rate}`} value={rate}/>{rate}%</label>)}</RadioGroup><div className="field"><label htmlFor="tax-rate">Thuế suất (%)</label><div className="tax-input-wrap"><input id="tax-rate" type="number" inputMode="decimal" min="0.01" max="100" step="0.01" value={taxRate} onChange={e => setTaxRate(e.target.value)} aria-invalid={!validTax}/><span>%</span></div></div></div>}
+        {hasTax && <div className="tax-options"><RadioGroup aria-label="Mức thuế" className="tax-presets" value={taxRate} onValueChange={setTaxRate}>{['8', '10'].map(rate => <label key={rate} htmlFor={`tax-${rate}`} className="tax-preset" data-selected={taxRate === rate}><RadioGroupItem className="choice-radio" id={`tax-${rate}`} value={rate}/><span>{rate}%</span><Check className="choice-check" size={15} aria-hidden="true"/></label>)}</RadioGroup><div className="field"><label htmlFor="tax-rate">Thuế suất (%)</label><div className="tax-input-wrap"><input id="tax-rate" type="number" inputMode="decimal" min="0.01" max="100" step="0.01" value={taxRate} onChange={e => setTaxRate(e.target.value)} aria-invalid={!validTax}/><span>%</span></div></div></div>}
         {hasTax && !validTax && <p role="alert" className="field-error mt-3">Nhập thuế từ hơn 0 đến 100%, tối đa 2 chữ số thập phân.</p>}
       </div>
 
