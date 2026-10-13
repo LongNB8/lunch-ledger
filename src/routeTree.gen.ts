@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminDailyRouteImport } from './routes/admin.daily'
 import { Route as AdminDebtRouteImport } from './routes/admin.debt'
 import { Route as AdminDishesRouteImport } from './routes/admin.dishes'
+import { Route as AdminLoginsRouteImport } from './routes/admin.logins'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminMealsNewRouteImport } from './routes/admin.meals.new'
 
@@ -36,6 +37,11 @@ const AdminDishesRoute = AdminDishesRouteImport.update({
   path: '/admin/dishes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginsRoute = AdminLoginsRouteImport.update({
+  id: '/admin/logins',
+  path: '/admin/logins',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminMembersRoute = AdminMembersRouteImport.update({
   id: '/admin/members',
   path: '/admin/members',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/admin/daily': typeof AdminDailyRoute
   '/admin/debt': typeof AdminDebtRoute
   '/admin/dishes': typeof AdminDishesRoute
+  '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/admin/daily': typeof AdminDailyRoute
   '/admin/debt': typeof AdminDebtRoute
   '/admin/dishes': typeof AdminDishesRoute
+  '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/admin/daily': typeof AdminDailyRoute
   '/admin/debt': typeof AdminDebtRoute
   '/admin/dishes': typeof AdminDishesRoute
+  '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/admin/daily'
     | '/admin/debt'
     | '/admin/dishes'
+    | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin/daily'
     | '/admin/debt'
     | '/admin/dishes'
+    | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/admin/daily'
     | '/admin/debt'
     | '/admin/dishes'
+    | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   AdminDailyRoute: typeof AdminDailyRoute
   AdminDebtRoute: typeof AdminDebtRoute
   AdminDishesRoute: typeof AdminDishesRoute
+  AdminLoginsRoute: typeof AdminLoginsRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminMealsNewRoute: typeof AdminMealsNewRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDishesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/logins': {
+      id: '/admin/logins'
+      path: '/admin/logins'
+      fullPath: '/admin/logins'
+      preLoaderRoute: typeof AdminLoginsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/members': {
       id: '/admin/members'
       path: '/admin/members'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDailyRoute: AdminDailyRoute,
   AdminDebtRoute: AdminDebtRoute,
   AdminDishesRoute: AdminDishesRoute,
+  AdminLoginsRoute: AdminLoginsRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminMealsNewRoute: AdminMealsNewRoute,
 }

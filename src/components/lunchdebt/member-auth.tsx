@@ -5,6 +5,7 @@ import { lovable } from '@/integrations/lovable';
 import { Button } from '@/components/ui/button';
 import { LogIn, Loader2, LockKeyhole, Eye, EyeOff } from 'lucide-react';
 import { loginEmail } from './login-identity';
+import { recordLogin } from './logins.functions';
 const MemberAuthContext = createContext<{ userId: string | null; ready: boolean }>({ userId: null, ready: false });
 export function MemberAuthProvider({ children }: { children: ReactNode }) {
  const [state, setState] = useState({ userId: null as string | null, ready: false });
@@ -14,6 +15,10 @@ export function MemberAuthProvider({ children }: { children: ReactNode }) {
   let identityEvent = false;
   const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
    if (!['SIGNED_IN', 'SIGNED_OUT', 'USER_UPDATED'].includes(event)) return;
+   if (event === 'SIGNED_IN' && session && typeof window !== 'undefined') {
+    const key = 'ld-login-' + session.access_token.slice(-16);
+    if (!sessionStorage.getItem(key)) { sessionStorage.setItem(key, '1'); const method = session.user.app_metadata?.provider === 'google' ? 'google' : 'password'; setTimeout(() => { recordLogin({ data: { method } }).catch(() => {}); }, 0); }
+   }
    identityEvent = true;
    queryClient.removeQueries({ queryKey: ['member-management'] });
    if (alive) setState({ userId: session?.user.id ?? null, ready: true });
