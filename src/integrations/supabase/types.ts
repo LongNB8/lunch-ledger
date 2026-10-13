@@ -38,6 +38,48 @@ export type Database = {
         }
         Relationships: []
       }
+      login_history: {
+        Row: {
+          browser: string
+          country: string
+          device: string
+          email: string
+          id: string
+          ip_address: string
+          logged_in_at: string
+          method: string
+          os: string
+          user_agent: string
+          user_id: string
+        }
+        Insert: {
+          browser?: string
+          country?: string
+          device?: string
+          email?: string
+          id?: string
+          ip_address?: string
+          logged_in_at?: string
+          method?: string
+          os?: string
+          user_agent?: string
+          user_id?: string
+        }
+        Update: {
+          browser?: string
+          country?: string
+          device?: string
+          email?: string
+          id?: string
+          ip_address?: string
+          logged_in_at?: string
+          method?: string
+          os?: string
+          user_agent?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       meal_items: {
         Row: {
           id: string

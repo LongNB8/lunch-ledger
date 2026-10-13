@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useRouterState } from '@tanstack/react-router';
-import { ArrowUpRight, Bell, CalendarDays, ChevronDown, Home, Menu, Plus, ShieldCheck, Users, Utensils, Wallet } from 'lucide-react';
+import { ArrowUpRight, Bell, CalendarDays, ChevronDown, History, Home, Menu, Plus, ShieldCheck, Users, Utensils, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { saigonToday, displayDate } from './ledger';
@@ -11,6 +11,7 @@ const navigation = [
   { to: '/admin/daily' as const, label: 'Bảng kê theo ngày', mobile: 'Bảng kê', icon: CalendarDays },
  { to: '/admin/members' as const, label: 'Quản lý thành viên', mobile: 'Thành viên', icon: Users },
  { to: '/admin/dishes' as const, label: 'Quản lý món ăn', mobile: 'Món ăn', icon: Utensils },
+ { to: '/admin/logins' as const, label: 'Lịch sử đăng nhập', mobile: 'Đăng nhập', icon: History },
 ];
 export function Brand() { return <div className="brand"><span className="brand-icon"><Utensils size={21}/></span><span>Lunch<span className="text-primary">Debt</span><span className="text-primary">.</span></span></div>; }
 function Navigation({ close }: { close?: () => void }) {
