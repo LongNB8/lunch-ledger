@@ -1,0 +1,1 @@
+ALTER TABLE public.dishes ADD COLUMN icon text NOT NULL DEFAULT 'utensils' CHECK (icon IN ('utensils', 'soup', 'coffee', 'beef', 'fish', 'salad', 'pizza', 'sandwich', 'cake', 'ice-cream', 'milk', 'apple'));
