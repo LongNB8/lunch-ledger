@@ -11,9 +11,9 @@ describe('meal tax totals', () => {
   });
   it.each([8, 10, 7.5])('applies %s percent to the bill and each eater', rate => {
     const result = calculateMealTotals(items, rate);
-    expect(result.total).toBe(120000 * (1 + rate / 100));
-    expect(result.shares.get('a')).toBe(70000 * (1 + rate / 100));
-    expect(result.shares.get('b')).toBe(50000 * (1 + rate / 100));
+    expect(result.total).toBe(120000 + 120000 * rate / 100);
+    expect(result.shares.get('a')).toBe(70000 + 70000 * rate / 100);
+    expect(result.shares.get('b')).toBe(50000 + 50000 * rate / 100);
     expect(result.savedItems.reduce((sum, item) => sum + item.price, 0)).toBe(result.total);
   });
   it('keeps rounded tax lines reconciled, including discounts', () => {
