@@ -1,4 +1,7 @@
 # LunchDebt
+## Meal option visual polish
+- [x] Replace circular meal choices with aligned icon choices and clear selected checks; refine VAT selector and scan action.
+- [ ] Verify selection, keyboard focus and desktop/mobile presentation without changing calculations.
 ## Optional meal tax and form redesign
 - [x] Polish the meal form and compact preset choices.
 - [x] Add optional editable tax with 8%/10% presets, member shares and saved totals.
