@@ -1,8 +1,8 @@
 # LunchDebt
 ## Optional meal tax and form redesign
-- [ ] Polish the meal form and compact preset choices.
-- [ ] Add optional editable tax with 8%/10% presets, member shares and saved totals.
-- [ ] Verify calculations and authenticated save/readback.
+- [x] Polish the meal form and compact preset choices.
+- [x] Add optional editable tax with 8%/10% presets, member shares and saved totals.
+- [x] Verify calculations and authenticated save/readback, debt contributions and remove verification records.
 
 - [x] Redesign every screen with the selected white/teal palette and Outfit/Figtree typography, preserving layout.
 - [ ] Provision the special management account and verify username sign-in without email confirmation. Blocked: Cloud Auth rejects the supplied password as weak; awaiting a replacement through the secure form.
