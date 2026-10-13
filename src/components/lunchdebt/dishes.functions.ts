@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { dishSchema } from './dish-schema';
 
 export const listDishes = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
-  const dishes = await context.supabase.from('dishes').select('id,name,price').order('name');
+  const dishes = await context.supabase.from('dishes').select('id,name,price,icon').order('name');
   if (dishes.error) throw new Error('Không thể tải danh sách món. Vui lòng thử lại.');
   return { dishes: dishes.data ?? [] };
 });

@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useBlocker, useNavigate } from '@tanstack/react-router';
 import { useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Camera, Check, Loader2, Plus, Trash2, Users, Search, Utensils, ReceiptText, Percent, Soup, Coffee } from 'lucide-react';
+import { Camera, Check, Loader2, Plus, Trash2, Users, Search, Utensils, ReceiptText, Percent } from 'lucide-react';
+import { DishIcon } from '@/components/lunchdebt/dish-icons';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -21,7 +22,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export const Route = createFileRoute('/admin/meals/new')({ head: () => pageHead('Tạo bữa ăn', 'Tạo bữa ăn, quét hóa đơn bằng AI và đối soát tiền tự động với LunchDebt.'), component: NewMeal });
 
 type Item = { key: string; name: string; price: number; member_ids: string[]; even?: boolean };
-const MEAL_PRESETS = ['Cơm trưa văn phòng', 'Cơm tấm', 'Bún chả', 'Phở', 'Bún bò Huế', 'Lẩu', 'Trà sữa', 'Cà phê'];
 const EVEN_NAME = 'Món chung (chia đều)';
 const today = saigonToday;
 const newKey = () => Math.random().toString(36).slice(2);
@@ -62,7 +62,7 @@ function MealForm({ userId }: { userId: string }) {
   const members = useMemo(() => (membersQuery.data?.members ?? []).filter(m => m.is_active), [membersQuery.data]);
   const dishesQuery = useQuery({ queryKey: ['dishes', userId], queryFn: () => listDishes() });
   const dishes = dishesQuery.data?.dishes ?? [];
-  const presets = [...new Set([...MEAL_PRESETS, ...dishes.map(d => d.name)])].slice(0, 12);
+  const presets = dishes.map(d => d.name);
   const [name, setName] = useState('');
   const [date, setDate] = useState(today());
   const [items, setItems] = useState<Item[]>([]);
@@ -123,11 +123,10 @@ function MealForm({ userId }: { userId: string }) {
         <div className="grid gap-4">
           <div className="field">
             <label htmlFor="meal-name">Tên bữa ăn *</label>
-            <input id="meal-name" value={name} onChange={e => setName(e.target.value)} placeholder="Nhập tên hoặc chọn bên dưới" maxLength={120}/>
-            <RadioGroup aria-label="Tên có sẵn" className="meal-presets" value={presets.find(p => name === withDay(p, date)) ?? ''} onValueChange={p => setName(withDay(p, date))}>{presets.map((p, index) => {
-              const Icon = /trà|cà phê/i.test(p) ? Coffee : /bún|phở|lẩu/i.test(p) ? Soup : Utensils;
-              return <label key={p} htmlFor={`meal-preset-${index}`} className="meal-preset" data-selected={name === withDay(p, date)}><RadioGroupItem className="choice-radio" id={`meal-preset-${index}`} value={p}/><Icon className="choice-icon" size={19} aria-hidden="true"/><span>{p}</span><Check className="choice-check" size={15} aria-hidden="true"/></label>;
-            })}</RadioGroup>
+            <input id="meal-name" value={name} onChange={e => setName(e.target.value)} placeholder={dishes.length ? 'Nhập tên hoặc chọn bên dưới' : 'Nhập tên bữa ăn'} maxLength={120}/>
+            {dishes.length > 0 && <RadioGroup aria-label="Tên có sẵn" className="meal-presets" value={presets.find(p => name === withDay(p, date)) ?? ''} onValueChange={p => setName(withDay(p, date))}>{dishes.map((dish, index) => (
+              <label key={dish.id} htmlFor={`meal-preset-${index}`} className="meal-preset" data-selected={name === withDay(dish.name, date)}><RadioGroupItem className="choice-radio" id={`meal-preset-${index}`} value={dish.name}/><DishIcon name={dish.icon} className="choice-icon"/><span>{dish.name}</span><Check className="choice-check" size={15} aria-hidden="true"/></label>
+            ))}</RadioGroup>}
           </div>
           <label className="field">Ngày ăn<input type="date" value={date} onChange={e => changeDate(e.target.value)}/></label>
         </div>
