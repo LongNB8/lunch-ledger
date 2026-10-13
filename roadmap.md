@@ -1,7 +1,7 @@
 # LunchDebt
 ## Registered dish choices and icons
-- [ ] Remove built-in meal name choices and use all registered dishes with their saved icons.
-- [ ] Add persisted icon selection in dish management and verify save/edit/readback.
+- [x] Remove built-in meal name choices and use all registered dishes with their saved icons.
+- [x] Add persisted icon selection in dish management and verify save/edit/readback.
 ## Meal option visual polish
 - [x] Replace circular meal choices with aligned icon choices and clear selected checks; refine VAT selector and scan action.
 - [x] Verify selection, keyboard focus and desktop/mobile presentation without changing calculations.
