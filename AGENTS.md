@@ -20,4 +20,5 @@
 - Homepage, daily ledger and debt breakdowns share an authenticated owner-scoped ledger read and query cache; this keeps real records consistent without fabricated per-meal payment statuses.
 - Daily ledger date and expanded meal are validated URL search parameters; saved-meal navigation and direct links retain the same view after refresh.
 - Dish management uses the owner-scoped dishes table with authenticated validated server functions; meal creation suggests saved dishes for the meal name chips and dish name/price prefills.
+- Persist dish icon identifiers validated by a shared allowlist and render them through a shared icon component so dish management and meal choices remain consistent.
 - Resolve the reserved management login alias through login-identity before standard Cloud Auth; provision its confirmed account out of band, never with a public bootstrap endpoint or browser credentials, and preserve owner-scoped access.

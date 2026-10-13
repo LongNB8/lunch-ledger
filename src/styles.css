@@ -699,6 +699,9 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation: none !important; transition: none !important; } }
 
 /* Compact meal choices and an itemized tax receipt. */
+.dish-icon-picker { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; }
+.dish-icon-option { width: 100%; height: 46px; color: var(--muted-foreground); }
+.dish-icon-option[aria-pressed=true] { background: var(--secondary); border-color: var(--primary); color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
 .meal-presets { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 6px; }
 .meal-preset,.tax-preset { position: relative; display: grid; grid-template-columns: 20px minmax(0,1fr) 15px; align-items: center; gap: 10px; min-height: 62px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); font-size: 13px; font-weight: 500; cursor: pointer; }
 .meal-preset:hover,.tax-preset:hover { border-color: var(--primary); }

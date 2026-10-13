@@ -11,6 +11,7 @@ import { ConfirmAction } from '@/components/lunchdebt/confirm-action';
 import { dishSchema, type Dish, type DishInput } from '@/components/lunchdebt/dish-schema';
 import { listDishes, saveDish, deleteDish } from '@/components/lunchdebt/dishes.functions';
 import { normalizeSearch } from '@/components/lunchdebt/member-schema';
+import { DishIcon, dishIcons } from '@/components/lunchdebt/dish-icons';
 
 export const Route = createFileRoute('/admin/dishes')({ head: () => pageHead('Quản lý món ăn', 'Quản lý danh sách món hay gọi cùng giá thường dùng, để tạo bữa ăn nhanh hơn trên LunchDebt.'), component: Dishes });
 
@@ -65,12 +66,12 @@ function DishView({ dishes, signedIn }: { dishes: Dish[]; signedIn: boolean }) {
     <div className="member-desktop data-table-wrap">
       <table className="data-table member-table">
         <thead><tr><th>Tên món</th><th>Giá hay gọi</th><th>Thao tác</th></tr></thead>
-        <tbody>{filtered.map(dish => <tr key={dish.id}><td>{dish.name}</td><td>{price(dish)}</td><td>{actions(dish)}</td></tr>)}</tbody>
+        <tbody>{filtered.map(dish => <tr key={dish.id}><td><span className="table-meal"><span className="table-meal-icon"><DishIcon name={dish.icon}/></span>{dish.name}</span></td><td>{price(dish)}</td><td>{actions(dish)}</td></tr>)}</tbody>
       </table>
     </div>
     <div className="member-mobile-list">
       {filtered.map(dish => <article className="member-mobile-card" key={dish.id}>
-        <div className="member-card-top"><div className="min-w-0"><h2>{dish.name}</h2><p>{dish.price > 0 ? `Hay gọi ${dish.price / 1000}k` : 'Chưa ghi giá'}</p></div>{actions(dish)}</div>
+        <div className="member-card-top"><div className="min-w-0"><h2 className="flex items-center gap-2"><DishIcon name={dish.icon} className="text-primary"/>{dish.name}</h2><p>{dish.price > 0 ? `Hay gọi ${dish.price / 1000}k` : 'Chưa ghi giá'}</p></div>{actions(dish)}</div>
         <div className="member-card-bottom"><span className="pill neutral member-team-label">{price(dish)}</span></div>
       </article>)}
     </div>
@@ -89,7 +90,7 @@ function DishView({ dishes, signedIn }: { dishes: Dish[]; signedIn: boolean }) {
 }
 
 function DishForm({ dish, dishes, signedIn, onSave, onClose }: { dish?: Dish | undefined; dishes: Dish[]; signedIn: boolean; onSave: (input: DishInput) => Promise<void>; onClose: () => void }) {
-  const [values, setValues] = useState<DishInput>(dish ?? { name: '', price: 0 });
+  const [values, setValues] = useState<DishInput>(() => ({ name: dish?.name ?? '', price: dish?.price ?? 0, ...(dish ? { id: dish.id } : {}), icon: dishIcons.find(icon => icon.value === dish?.icon)?.value ?? 'utensils' }));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   function field<K extends keyof DishInput>(key: K, value: DishInput[K]) { setValues(current => ({ ...current, [key]: value })); setErrors(current => ({ ...current, [key]: '', form: '' })); }
@@ -107,6 +108,7 @@ function DishForm({ dish, dishes, signedIn, onSave, onClose }: { dish?: Dish | u
     <div className="member-form-grid">
       <label className="field full">Tên món <span className="sr-only">bắt buộc</span><input name="name" placeholder="Cơm tấm, bún chả…" maxLength={120} value={values.name} aria-required="true" aria-invalid={Boolean(errors['name'])} onChange={event => field('name', event.target.value)}/>{errorText('name')}</label>
       <label className="field full">Giá hay gọi (nghìn đồng)<input name="price" type="number" step="any" inputMode="decimal" min={0} placeholder="0" value={values.price / 1000} onChange={event => field('price', Math.round((Number(event.target.value) || 0) * 1000))}/><span className="text-xs text-muted-foreground">{values.price > 0 ? currency(values.price) : 'Chưa rõ giá'}</span>{errorText('price')}</label>
+      <fieldset className="field full"><legend className="mb-3">Biểu tượng</legend><div className="dish-icon-picker">{dishIcons.map(({ value, label, Icon }) => <Button key={value} type="button" variant="outline" size="icon" className="dish-icon-option" aria-label={label} aria-pressed={values.icon === value} title={label} onClick={() => field('icon', value)}><Icon size={22}/></Button>)}</div>{errorText('icon')}</fieldset>
     </div>
     {errors['form'] && <div className="member-error" role="alert">{errors['form']}</div>}
     <div className="member-form-footer">

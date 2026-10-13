@@ -8,6 +8,13 @@
       "when": 1791902909999,
       "tag": "0000_login_history",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791908191524,
+      "tag": "0001_add_dish_icons",
+      "breakpoints": true
     }
   ]
 }
