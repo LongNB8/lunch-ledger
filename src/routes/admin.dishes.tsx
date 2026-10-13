@@ -90,7 +90,7 @@ function DishView({ dishes, signedIn }: { dishes: Dish[]; signedIn: boolean }) {
 }
 
 function DishForm({ dish, dishes, signedIn, onSave, onClose }: { dish?: Dish | undefined; dishes: Dish[]; signedIn: boolean; onSave: (input: DishInput) => Promise<void>; onClose: () => void }) {
-  const [values, setValues] = useState<DishInput>(() => dishSchema.parse(dish ?? { name: '', price: 0, icon: 'utensils' }));
+  const [values, setValues] = useState<DishInput>(() => ({ name: dish?.name ?? '', price: dish?.price ?? 0, ...(dish ? { id: dish.id } : {}), icon: dishIcons.find(icon => icon.value === dish?.icon)?.value ?? 'utensils' }));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   function field<K extends keyof DishInput>(key: K, value: DishInput[K]) { setValues(current => ({ ...current, [key]: value })); setErrors(current => ({ ...current, [key]: '', form: '' })); }
