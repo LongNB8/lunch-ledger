@@ -12,6 +12,7 @@
 - Use TanStack Start and React for LunchDebt; preserve the template router instead of introducing another framework.
 - Place shared LunchDebt navigation in the root layout and domain UI in src/components/lunchdebt so every leaf page shares the same desktop/mobile shell.
 - Meals and meal_items are owner-scoped Cloud tables saved via an authenticated server function that re-checks the bill total; member management uses owner-scoped Cloud tables and authenticated validated server functions.
+- Calculate optional meal VAT with the shared meal-totals module and persist server-generated tax item rows with the original eater IDs; this keeps existing ledger and balance calculations accurate without changing historical dish prices.
 - Debts come from the security-invoker view view_member_balances (item price split evenly across its members minus payments); settling re-reads the balance server-side so a payment always equals the full debt.
 - Define visual roles and responsive geometry in src/styles.css so desktop and iPhone layouts share a semantic design system.
 - Member management stays public with an inline sign-in CTA; private records are read after session hydration and every mutation validates through the authenticated server boundary and RLS.
