@@ -1,30 +1,32 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import { calculateMealTotals } from './meal-totals';
 
 const itemSchema = z.object({
   name: z.string().trim().min(1).max(120),
   price: z.number().int().min(-100_000_000).max(100_000_000),
-  member_ids: z.array(z.string().uuid()).max(200),
+  member_ids: z.array(z.string().uuid()).min(1).max(200).refine(ids => new Set(ids).size === ids.length, 'Người ăn bị trùng.'),
 });
 export const mealSchema = z.object({
   name: z.string().trim().min(1, 'Nhập tên bữa ăn').max(120),
   eaten_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   total_amount: z.number().int().min(1).max(1_000_000_000),
+  tax_rate: z.number().min(0).max(100).multipleOf(0.01).default(0),
   participant_ids: z.array(z.string().uuid()).min(1).max(200),
   items: z.array(itemSchema).min(1).max(200),
 });
 
 export const saveMeal = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(mealSchema).handler(async ({ data, context }) => {
-  const sum = data.items.reduce((s, i) => s + i.price, 0);
-  if (sum !== data.total_amount) throw new Error('Tổng các món chưa khớp với tổng hóa đơn.');
+  const totals = calculateMealTotals(data.items, data.tax_rate);
+  if (totals.total !== data.total_amount) throw new Error('Tổng các món và thuế chưa khớp với tổng hóa đơn.');
   const allowed = new Set(data.participant_ids);
   if (data.items.some(i => i.member_ids.length === 0 || i.member_ids.some(id => !allowed.has(id)))) throw new Error('Mỗi món cần ít nhất một người ăn trong danh sách tham gia.');
   const owned = await context.supabase.from('members').select('id').in('id', data.participant_ids);
   if (owned.error || (owned.data?.length ?? 0) !== allowed.size) throw new Error('Có thành viên không hợp lệ.');
   const meal = await context.supabase.from('meals').insert({ name: data.name, eaten_on: data.eaten_on, total_amount: data.total_amount, participant_ids: data.participant_ids, owner_id: context.userId }).select('id').single();
   if (meal.error) throw new Error('Không thể lưu bữa ăn. Vui lòng thử lại.');
-  const items = await context.supabase.from('meal_items').insert(data.items.map((i, position) => ({ ...i, position, meal_id: meal.data.id, owner_id: context.userId })));
+  const items = await context.supabase.from('meal_items').insert(totals.savedItems.map((i, position) => ({ ...i, position, meal_id: meal.data.id, owner_id: context.userId })));
   if (items.error) {
     await context.supabase.from('meals').delete().eq('id', meal.data.id);
     throw new Error('Không thể lưu danh sách món. Vui lòng thử lại.');

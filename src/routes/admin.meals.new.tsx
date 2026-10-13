@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useBlocker, useNavigate } from '@tanstack/react-router';
 import { useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Camera, Check, Loader2, Plus, Trash2, Users, Search, Utensils, ReceiptText } from 'lucide-react';
+import { Camera, Check, Loader2, Plus, Trash2, Users, Search, Utensils, ReceiptText, Percent } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -14,6 +14,9 @@ import { saveMeal, scanBill } from '@/components/lunchdebt/meals.functions';
 import { saigonToday } from '@/components/lunchdebt/ledger';
 import { ConfirmAction } from '@/components/lunchdebt/confirm-action';
 import { missingMealFields } from '@/components/lunchdebt/meal-validation';
+import { calculateMealTotals } from '@/components/lunchdebt/meal-totals';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const Route = createFileRoute('/admin/meals/new')({ head: () => pageHead('Tạo bữa ăn', 'Tạo bữa ăn, quét hóa đơn bằng AI và đối soát tiền tự động với LunchDebt.'), component: NewMeal });
 
@@ -63,20 +66,26 @@ function MealForm({ userId }: { userId: string }) {
   const [name, setName] = useState('');
   const [date, setDate] = useState(today());
   const [items, setItems] = useState<Item[]>([]);
+  const [hasTax, setHasTax] = useState(false);
+  const [taxRate, setTaxRate] = useState('8');
   const [scanning, setScanning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const savedRef = useRef(false);
-  const dirty = !saved && Boolean(name || items.length || date !== today());
+  const dirty = !saved && Boolean(name || items.length || date !== today() || hasTax);
   const blocker = useBlocker({ shouldBlockFn: () => dirty && !savedRef.current, enableBeforeUnload: dirty, withResolver: true });
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const sum = items.reduce((s, i) => s + (lineTotal(i) || 0), 0);
+  const baseItems = items.map(i => ({ name: i.even ? EVEN_NAME : i.name.trim(), price: lineTotal(i), member_ids: i.member_ids }));
+  const validTax = !hasTax || (taxRate.trim() !== '' && Number.isFinite(Number(taxRate)) && Number(taxRate) > 0 && Number(taxRate) <= 100 && Math.abs(Number(taxRate) * 100 - Math.round(Number(taxRate) * 100)) < 0.000001);
+  const effectiveRate = hasTax && validTax ? Number(taxRate) : 0;
+  const totals = calculateMealTotals(baseItems, effectiveRate);
   const hasEven = items.some(i => i.even);
   const changeDate = (d: string) => { const preset = presets.find(p => name === withDay(p, date)); setDate(d); if (preset) setName(withDay(preset, d)); };
-  const totalNum = sum;
+  const totalNum = totals.total;
   const participants = [...new Set(items.flatMap(i => i.member_ids))];
   const missing = missingMealFields(name, date, totalNum, participants, items.map(i => i.even ? { ...i, name: EVEN_NAME } : i));
+  if (!validTax) missing.push('Thuế từ hơn 0 đến 100%, tối đa 2 chữ số thập phân');
   const canSave = !missing.length && !saving && !scanning;
   const update = (key: string, patch: Partial<Item>) => setItems(list => list.map(i => i.key === key ? { ...i, ...patch } : i));
 
@@ -93,9 +102,10 @@ function MealForm({ userId }: { userId: string }) {
   }
 
   async function onSave() {
+    if (!canSave) return;
     setSaving(true);
     try {
-      const saved = await saveMeal({ data: { name: name.trim(), eaten_on: date, total_amount: totalNum, participant_ids: participants, items: items.map(i => ({ name: i.even ? EVEN_NAME : i.name.trim(), price: lineTotal(i), member_ids: i.member_ids })) } });
+      const saved = await saveMeal({ data: { name: name.trim(), eaten_on: date, total_amount: totalNum, tax_rate: effectiveRate, participant_ids: participants, items: baseItems } });
       savedRef.current = true;
       setSaved(true);
       toast.success('Đã lưu bữa ăn');
@@ -114,7 +124,7 @@ function MealForm({ userId }: { userId: string }) {
           <div className="field">
             <label htmlFor="meal-name">Tên bữa ăn *</label>
             <input id="meal-name" value={name} onChange={e => setName(e.target.value)} placeholder="Nhập tên hoặc chọn bên dưới" maxLength={120}/>
-            <div role="radiogroup" aria-label="Tên có sẵn" className="flex flex-wrap gap-2 mt-1">{presets.map(p => <label key={p} className="meal-check cursor-pointer text-sm" data-selected={name === withDay(p, date)}><input type="radio" name="meal-preset" checked={name === withDay(p, date)} onChange={() => setName(withDay(p, date))}/>{p}</label>)}</div>
+            <RadioGroup aria-label="Tên có sẵn" className="meal-presets" value={presets.find(p => name === withDay(p, date)) ?? ''} onValueChange={p => setName(withDay(p, date))}>{presets.map((p, index) => <label key={p} htmlFor={`meal-preset-${index}`} className="meal-preset" data-selected={name === withDay(p, date)}><RadioGroupItem id={`meal-preset-${index}`} value={p}/><span>{p}</span></label>)}</RadioGroup>
           </div>
           <label className="field">Ngày ăn<input type="date" value={date} onChange={e => changeDate(e.target.value)}/></label>
         </div>
@@ -139,10 +149,17 @@ function MealForm({ userId }: { userId: string }) {
         </div>
       </div>
 
-      <div className="form-section meal-reconciliation">
+      <div className="form-section meal-tax-section">
+        <div className="tax-heading"><h2 className="builder-title"><Percent size={19}/>Thuế VAT</h2><Select value={hasTax ? 'yes' : 'no'} onValueChange={value => setHasTax(value === 'yes')}><SelectTrigger aria-label="Áp dụng thuế" className="tax-select"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="no">Không thuế</SelectItem><SelectItem value="yes">Có thuế</SelectItem></SelectContent></Select></div>
+        {hasTax && <div className="tax-options"><RadioGroup aria-label="Mức thuế" className="tax-presets" value={taxRate} onValueChange={setTaxRate}>{['8', '10'].map(rate => <label key={rate} htmlFor={`tax-${rate}`} className="tax-preset" data-selected={taxRate === rate}><RadioGroupItem id={`tax-${rate}`} value={rate}/>{rate}%</label>)}</RadioGroup><div className="field"><label htmlFor="tax-rate">Thuế suất (%)</label><div className="tax-input-wrap"><input id="tax-rate" type="number" inputMode="decimal" min="0.01" max="100" step="0.01" value={taxRate} onChange={e => setTaxRate(e.target.value)} aria-invalid={!validTax}/><span>%</span></div></div></div>}
+        {hasTax && !validTax && <p role="alert" className="field-error mt-3">Nhập thuế từ hơn 0 đến 100%, tối đa 2 chữ số thập phân.</p>}
+      </div>
+
+      <div className="form-section meal-reconciliation" aria-live="polite">
         <h2 className="builder-title"><ReceiptText size={19}/>Tổng kết</h2>
-        <div className="flex justify-between text-sm"><span>Số món</span><strong>{items.length}</strong></div>
-        <div className="flex justify-between mt-2"><span>Tổng bữa ăn</span><strong className="text-primary">{currency(sum)}</strong></div>
+        <div className="summary-meta"><span>{items.length} món</span><span><Users size={14}/>{participants.length} người ăn</span></div>
+        <dl className="meal-summary-lines"><div><dt>Tiền món</dt><dd>{currency(totals.subtotal)}</dd></div><div><dt>{hasTax ? `Thuế VAT (${effectiveRate}%)` : 'Thuế VAT'}</dt><dd>{hasTax ? currency(totals.tax) : 'Không áp dụng'}</dd></div><div className="meal-grand-total"><dt>Tổng thanh toán</dt><dd>{currency(totalNum)}</dd></div></dl>
+        {participants.length > 0 && <div className="member-share-list"><h3>Tiền mỗi người</h3>{participants.map(id => <div key={id} className="member-share"><span className="avatar"><Users size={15}/></span><span>{members.find(m => m.id === id)?.name ?? 'Thành viên'}</span><strong>{currency(totals.shares.get(id) ?? 0)}</strong></div>)}</div>}
         {missing.length > 0 && <div className="mt-3 text-sm text-muted-foreground" aria-live="polite"><p className="font-medium">Còn thiếu:</p><ul className="list-disc pl-5 mt-2 space-y-1">{missing.map(field => <li key={field}>{field}</li>)}</ul></div>}
         <Button className="h-12 w-full mt-4" disabled={!canSave} onClick={onSave}>{saving ? <Loader2 className="animate-spin"/> : <Check/>}Lưu bữa ăn</Button>
       </div>
