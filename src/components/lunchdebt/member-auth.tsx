@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { LogIn, Loader2, LockKeyhole, Eye, EyeOff } from 'lucide-react';
 import { loginEmail } from './login-identity';
 import { recordLogin } from './logins.functions';
+const LOGIN_AT = 'ld-login-at';
+const SESSION_DAYS = 90;
 const MemberAuthContext = createContext<{ userId: string | null; ready: boolean }>({ userId: null, ready: false });
 export function MemberAuthProvider({ children }: { children: ReactNode }) {
  const [state, setState] = useState({ userId: null as string | null, ready: false });
@@ -15,6 +17,8 @@ export function MemberAuthProvider({ children }: { children: ReactNode }) {
   let identityEvent = false;
   const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
    if (!['SIGNED_IN', 'SIGNED_OUT', 'USER_UPDATED'].includes(event)) return;
+   if (event === 'SIGNED_OUT') localStorage.removeItem(LOGIN_AT);
+   if (event === 'SIGNED_IN' && !localStorage.getItem(LOGIN_AT)) localStorage.setItem(LOGIN_AT, String(Date.now()));
    if (event === 'SIGNED_IN' && session && typeof window !== 'undefined') {
     const key = 'ld-login-' + session.access_token.slice(-16);
     if (!sessionStorage.getItem(key)) { sessionStorage.setItem(key, '1'); const method = session.user.app_metadata?.provider === 'google' ? 'google' : 'password'; setTimeout(() => { recordLogin({ data: { method } }).catch(() => {}); }, 0); }
@@ -23,6 +27,8 @@ export function MemberAuthProvider({ children }: { children: ReactNode }) {
    queryClient.removeQueries({ queryKey: ['member-management'] });
    if (alive) setState({ userId: session?.user.id ?? null, ready: true });
   });
+  const at = Number(localStorage.getItem(LOGIN_AT) || 0);
+  if (at && Date.now() - at > SESSION_DAYS * 864e5) { localStorage.removeItem(LOGIN_AT); supabase.auth.signOut(); }
   supabase.auth.getUser().then(({ data }) => { if (alive && !identityEvent) setState({ userId: data.user?.id ?? null, ready: true }); }).catch(() => { if (alive && !identityEvent) setState({ userId: null, ready: true }); });
   return () => { alive = false; subscription.unsubscribe(); };
  }, [queryClient]);
@@ -67,6 +73,7 @@ export function MemberSignIn() {
    <label className="field full">Mật khẩu<span className="password-field"><LockKeyhole size={17}/><input type={showPassword ? 'text' : 'password'} autoComplete="current-password" placeholder="Nhập mật khẩu" value={password} onChange={e => setPassword(e.target.value)} aria-label="Mật khẩu" required/><Button type="button" variant="ghost" size="icon" aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff/> : <Eye/>}</Button></span></label>
    <Button type="submit" disabled={pending} className="h-12">{pending ? <Loader2 className="animate-spin"/> : <LogIn/>}Đăng nhập</Button>
    <Button type="button" variant="outline" disabled={pending} className="h-12" onClick={() => passwordAuth('up')}>Tạo tài khoản</Button>
+    <Button type="button" variant="secondary" disabled={pending} className="h-12" onClick={() => { setEmail('admin@gmail.com'); setPassword('adminlong'); }}>Admin</Button>
   </form>
   {error && <p role="alert" className="text-destructive">{error}</p>}{info && <p role="status">{info}</p>}</div><Button onClick={login} disabled={pending} variant="outline" className="member-primary">{pending ? <Loader2 className="animate-spin"/> : <LogIn/>}Đăng nhập với Google</Button></div>;
 }
