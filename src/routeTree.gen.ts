@@ -10,16 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminBatchRouteImport } from './routes/admin.batch'
+import { Route as AdminBatchHistoryRouteImport } from './routes/admin.batch-history'
 import { Route as AdminDailyRouteImport } from './routes/admin.daily'
 import { Route as AdminDebtRouteImport } from './routes/admin.debt'
 import { Route as AdminDishesRouteImport } from './routes/admin.dishes'
 import { Route as AdminLoginsRouteImport } from './routes/admin.logins'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminMealsNewRouteImport } from './routes/admin.meals.new'
+import { Route as ApiPublicBatchRunRouteImport } from './routes/api/public/batch/run'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBatchRoute = AdminBatchRouteImport.update({
+  id: '/admin/batch',
+  path: '/admin/batch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBatchHistoryRoute = AdminBatchHistoryRouteImport.update({
+  id: '/admin/batch-history',
+  path: '/admin/batch-history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminDailyRoute = AdminDailyRouteImport.update({
@@ -52,73 +65,99 @@ const AdminMealsNewRoute = AdminMealsNewRouteImport.update({
   path: '/admin/meals/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBatchRunRoute = ApiPublicBatchRunRouteImport.update({
+  id: '/api/public/batch/run',
+  path: '/api/public/batch/run',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/batch': typeof AdminBatchRoute
+  '/admin/batch-history': typeof AdminBatchHistoryRoute
   '/admin/daily': typeof AdminDailyRoute
   '/admin/debt': typeof AdminDebtRoute
   '/admin/dishes': typeof AdminDishesRoute
   '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
+  '/api/public/batch/run': typeof ApiPublicBatchRunRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/batch': typeof AdminBatchRoute
+  '/admin/batch-history': typeof AdminBatchHistoryRoute
   '/admin/daily': typeof AdminDailyRoute
   '/admin/debt': typeof AdminDebtRoute
   '/admin/dishes': typeof AdminDishesRoute
   '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
+  '/api/public/batch/run': typeof ApiPublicBatchRunRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/batch': typeof AdminBatchRoute
+  '/admin/batch-history': typeof AdminBatchHistoryRoute
   '/admin/daily': typeof AdminDailyRoute
   '/admin/debt': typeof AdminDebtRoute
   '/admin/dishes': typeof AdminDishesRoute
   '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
+  '/api/public/batch/run': typeof ApiPublicBatchRunRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin/batch'
+    | '/admin/batch-history'
     | '/admin/daily'
     | '/admin/debt'
     | '/admin/dishes'
     | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
+    | '/api/public/batch/run'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/batch'
+    | '/admin/batch-history'
     | '/admin/daily'
     | '/admin/debt'
     | '/admin/dishes'
     | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
+    | '/api/public/batch/run'
   id:
     | '__root__'
     | '/'
+    | '/admin/batch'
+    | '/admin/batch-history'
     | '/admin/daily'
     | '/admin/debt'
     | '/admin/dishes'
     | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
+    | '/api/public/batch/run'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminBatchRoute: typeof AdminBatchRoute
+  AdminBatchHistoryRoute: typeof AdminBatchHistoryRoute
   AdminDailyRoute: typeof AdminDailyRoute
   AdminDebtRoute: typeof AdminDebtRoute
   AdminDishesRoute: typeof AdminDishesRoute
   AdminLoginsRoute: typeof AdminLoginsRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminMealsNewRoute: typeof AdminMealsNewRoute
+  ApiPublicBatchRunRoute: typeof ApiPublicBatchRunRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -128,6 +167,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/batch': {
+      id: '/admin/batch'
+      path: '/admin/batch'
+      fullPath: '/admin/batch'
+      preLoaderRoute: typeof AdminBatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/batch-history': {
+      id: '/admin/batch-history'
+      path: '/admin/batch-history'
+      fullPath: '/admin/batch-history'
+      preLoaderRoute: typeof AdminBatchHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/daily': {
@@ -172,17 +225,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMealsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/batch/run': {
+      id: '/api/public/batch/run'
+      path: '/api/public/batch/run'
+      fullPath: '/api/public/batch/run'
+      preLoaderRoute: typeof ApiPublicBatchRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminBatchRoute: AdminBatchRoute,
+  AdminBatchHistoryRoute: AdminBatchHistoryRoute,
   AdminDailyRoute: AdminDailyRoute,
   AdminDebtRoute: AdminDebtRoute,
   AdminDishesRoute: AdminDishesRoute,
   AdminLoginsRoute: AdminLoginsRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminMealsNewRoute: AdminMealsNewRoute,
+  ApiPublicBatchRunRoute: ApiPublicBatchRunRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

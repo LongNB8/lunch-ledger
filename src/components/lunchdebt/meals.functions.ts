@@ -34,6 +34,24 @@ export const saveMeal = createServerFn({ method: 'POST' }).middleware([requireSu
   return { id: meal.data.id };
 });
 
+export const updateMealItems = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ meal_id: z.string().uuid(), name: z.string().trim().min(1).max(120), items: z.array(z.object({ id: z.string().uuid(), name: z.string().trim().min(1).max(120), price: z.number().int().min(-100_000_000).max(100_000_000) })).min(1).max(200) }))
+  .handler(async ({ data, context }) => {
+    const current = await context.supabase.from('meal_items').select('id').eq('meal_id', data.meal_id);
+    if (current.error || !current.data?.length) throw new Error('Không tìm thấy bữa ăn.');
+    const ids = new Set(current.data.map(i => i.id));
+    if (data.items.length !== ids.size || data.items.some(i => !ids.has(i.id))) throw new Error('Danh sách món đã thay đổi, hãy tải lại trang.');
+    const total = data.items.reduce((s, i) => s + i.price, 0);
+    if (total < 1 || total > 1_000_000_000) throw new Error('Tổng bữa ăn phải lớn hơn 0.');
+    for (const i of data.items) {
+      const r = await context.supabase.from('meal_items').update({ name: i.name, price: i.price }).eq('id', i.id).eq('meal_id', data.meal_id);
+      if (r.error) throw new Error('Không thể cập nhật món. Vui lòng thử lại.');
+    }
+    const m = await context.supabase.from('meals').update({ name: data.name, total_amount: total }).eq('id', data.meal_id);
+    if (m.error) throw new Error('Không thể cập nhật bữa ăn.');
+    return { total };
+  });
+
 export const scanBill = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
   .inputValidator(z.object({ image: z.string().regex(/^data:image\/(png|jpe?g|webp|heic|heif);base64,/).max(12_000_000) }))
   .handler(async ({ data }) => {

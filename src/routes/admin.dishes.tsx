@@ -12,6 +12,7 @@ import { dishSchema, type Dish, type DishInput } from '@/components/lunchdebt/di
 import { listDishes, saveDish, deleteDish } from '@/components/lunchdebt/dishes.functions';
 import { normalizeSearch } from '@/components/lunchdebt/member-schema';
 import { DishIcon, dishIcons } from '@/components/lunchdebt/dish-icons';
+import { PricePresets } from '@/components/lunchdebt/price-presets';
 
 export const Route = createFileRoute('/admin/dishes')({ head: () => pageHead('Quản lý món ăn', 'Quản lý danh sách món hay gọi cùng giá thường dùng, để tạo bữa ăn nhanh hơn trên LunchDebt.'), component: Dishes });
 
@@ -107,7 +108,7 @@ function DishForm({ dish, dishes, signedIn, onSave, onClose }: { dish?: Dish | u
   return <form onSubmit={submit} noValidate className="member-form">
     <div className="member-form-grid">
       <label className="field full">Tên món <span className="sr-only">bắt buộc</span><input name="name" placeholder="Cơm tấm, bún chả…" maxLength={120} value={values.name} aria-required="true" aria-invalid={Boolean(errors['name'])} onChange={event => field('name', event.target.value)}/>{errorText('name')}</label>
-      <label className="field full">Giá hay gọi (nghìn đồng)<input name="price" type="number" step="any" inputMode="decimal" min={0} placeholder="0" value={values.price / 1000} onChange={event => field('price', Math.round((Number(event.target.value) || 0) * 1000))}/><span className="text-xs text-muted-foreground">{values.price > 0 ? currency(values.price) : 'Chưa rõ giá'}</span>{errorText('price')}</label>
+      <label className="field full">Giá hay gọi (nghìn đồng)<input name="price" type="number" step="any" inputMode="decimal" min={0} placeholder="0" value={values.price / 1000} onChange={event => field('price', Math.round((Number(event.target.value) || 0) * 1000))}/><span className="text-xs text-muted-foreground">{values.price > 0 ? currency(values.price) : 'Chưa rõ giá'}</span>{errorText('price')}</label><div className="field full"><PricePresets value={values.price} onChange={p => field('price', p)}/></div>
       <fieldset className="field full"><legend className="mb-3">Biểu tượng</legend><div className="dish-icon-picker">{dishIcons.map(({ value, label, Icon }) => <Button key={value} type="button" variant="outline" size="icon" className="dish-icon-option" aria-label={label} aria-pressed={values.icon === value} title={label} onClick={() => field('icon', value)}><Icon size={22}/></Button>)}</div>{errorText('icon')}</fieldset>
     </div>
     {errors['form'] && <div className="member-error" role="alert">{errors['form']}</div>}

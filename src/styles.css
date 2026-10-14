@@ -744,3 +744,29 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 @media(max-width:400px) { .tax-options { grid-template-columns: minmax(0,1fr) 110px; gap: 12px; } .tax-preset { padding: 10px 8px; gap: 6px; } .meal-grand-total dd { font-size: 25px; } }
 @media(min-width:480px) and (max-width:1023px) { .meal-presets { grid-template-columns: repeat(3,minmax(0,1fr)); } }
 @media(prefers-reduced-motion:no-preference) { .meal-preset,.tax-preset { transition: background .18s ease,border-color .18s ease,box-shadow .18s ease; } }
+
+/* Quick price chips, batch screens, meal edit */
+.price-presets, .batch-days { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+@media (min-width: 480px) { .price-presets { grid-template-columns: repeat(8, minmax(0, 1fr)); } .batch-days { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+.price-preset { min-height: 38px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: 13px; font-weight: 600; transition: background-color .15s, border-color .15s, color .15s; }
+.price-preset:hover { border-color: var(--primary); }
+.price-preset:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.price-presets .price-preset[data-selected="true"], .batch-days .price-preset[data-selected="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+.batch-list { display: grid; gap: 16px; }
+.batch-card { display: grid; gap: 16px; }
+.batch-head { display: flex; align-items: flex-start; gap: 12px; }
+.batch-head h2 { font-size: 17px; font-weight: 600; }
+.batch-head p { margin-top: 2px; font-size: 13px; color: var(--muted-foreground); }
+.batch-meta { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 12px; border-radius: 10px; background: var(--muted); }
+.batch-meta dt { font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
+.batch-meta dd { margin-top: 2px; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.batch-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; }
+.batch-row .field { flex: 1 1 200px; }
+.batch-switch { display: flex; align-items: center; gap: 10px; min-height: 48px; font-size: 14px; font-weight: 500; }
+.batch-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.batch-actions > * { flex: 1 1 140px; }
+.batch-msg { max-width: 280px; overflow-wrap: anywhere; }
+.daily-meal-actions { display: flex; justify-content: flex-end; padding-top: 12px; }
+.meal-edit-dialog { max-height: 90dvh; display: flex; flex-direction: column; }
+.meal-edit-body { display: grid; gap: 12px; overflow-y: auto; padding-right: 4px; }
+.meal-edit-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

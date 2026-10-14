@@ -50,3 +50,9 @@
 - [x] Calculate shared meal totals by eater count and make shared mode exclusive.
 - [x] Refresh the shared shell and every page's visual presentation.
 - [x] Verify authenticated meal save, calculations and desktop/mobile layouts.
+
+## Meal corrections, price chips and debt report batch
+- [x] Edit saved meal names/prices from the daily ledger; totals and debts recalculate.
+- [x] Allow manual items alongside shared items; 35–70k price chips in meal form and dish management.
+- [x] Batch job tables, manual batch page (edit schedule, run now) and run history page.
+- [ ] Debt report email Tue/Thu 15:00. Blocked: sender Gmail app password rejected by Gmail; awaiting correct 16-letter app password. Scheduled runs need the app published.

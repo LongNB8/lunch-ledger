@@ -22,3 +22,4 @@
 - Dish management uses the owner-scoped dishes table with authenticated validated server functions; meal creation suggests saved dishes for the meal name chips and dish name/price prefills.
 - Persist dish icon identifiers validated by a shared allowlist and render them through a shared icon component so dish management and meal choices remain consistent.
 - Resolve the reserved management login alias through login-identity before standard Cloud Auth; provision its confirmed account out of band, never with a public bootstrap endpoint or browser credentials, and preserve owner-scoped access.
+- Batch jobs are owner-scoped rows users may only update (no create/delete); saving re-registers the database schedule via the service-only schedule_batch_job function, which calls the public batch route with a token stored in a service-only table; runs are logged in batch_job_runs and email goes out via Gmail SMTP using EMAIL_* secrets.

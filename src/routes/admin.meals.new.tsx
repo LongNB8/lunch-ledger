@@ -17,6 +17,7 @@ import { ConfirmAction } from '@/components/lunchdebt/confirm-action';
 import { missingMealFields } from '@/components/lunchdebt/meal-validation';
 import { calculateMealTotals } from '@/components/lunchdebt/meal-totals';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { PricePresets } from '@/components/lunchdebt/price-presets';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const Route = createFileRoute('/admin/meals/new')({ head: () => pageHead('Tạo bữa ăn', 'Tạo bữa ăn, quét hóa đơn bằng AI và đối soát tiền tự động với LunchDebt.'), component: NewMeal });
@@ -143,10 +144,11 @@ function MealForm({ userId }: { userId: string }) {
            {items.map(i => <div key={i.key} className="meal-item">
             {i.even ? <p className="text-sm font-medium">{EVEN_NAME}</p> : <input className="search-field" list="dish-suggestions" value={i.name} onChange={e => { const value = e.target.value; const match = dishes.find(d => d.name.toLowerCase() === value.trim().toLowerCase()); update(i.key, match && i.price === 0 && match.price > 0 ? { name: value, price: match.price } : { name: value }); }} placeholder="Tên món" aria-label="Tên món"/>}
             <label className="field">{i.even ? 'Giá mỗi người (nghìn đồng)' : 'Giá món (nghìn đồng)'}<input className="search-field" type="number" step="any" inputMode="decimal" value={i.price / 1000} onChange={e => update(i.key, { price: Math.round((Number(e.target.value) || 0) * 1000) })} aria-label="Giá món (nghìn đồng)"/><span className="text-xs text-muted-foreground">{i.even ? `${currency(i.price)} × ${i.member_ids.length} người = ${currency(lineTotal(i))}` : currency(i.price)}</span></label>
+            <PricePresets value={i.price} onChange={price => update(i.key, { price })}/>
             <MemberPicker members={members} loading={membersQuery.isLoading} error={membersQuery.isError} onRetry={() => void membersQuery.refetch()} value={i.member_ids} onChange={ids => update(i.key, { member_ids: ids })}/>
-            <div className="flex gap-2"><Button variant="secondary" className="h-12 flex-1" disabled={!i.even && items.length > 1} onClick={() => update(i.key, { even: !i.even })}>{i.even ? 'Nhập tên món' : 'Chia đều món này'}</Button><Button variant="ghost" className="h-12" aria-label="Xóa dòng" onClick={() => setItems(l => l.filter(x => x.key !== i.key))}><Trash2/></Button></div>
+            <div className="flex gap-2"><Button variant="secondary" className="h-12 flex-1" onClick={() => update(i.key, { even: !i.even })}>{i.even ? 'Nhập tên món' : 'Chia đều món này'}</Button><Button variant="ghost" className="h-12" aria-label="Xóa dòng" onClick={() => setItems(l => l.filter(x => x.key !== i.key))}><Trash2/></Button></div>
           </div>)}
-          {hasEven ? <p className="text-xs text-muted-foreground">Đang chia đều — không thể thêm món thủ công. Bỏ chia đều để thêm món.</p> : <Button variant="outline" className="h-12" onClick={() => setItems(l => [...l, { key: newKey(), name: '', price: 0, member_ids: [] }])}><Plus/>Thêm món thủ công</Button>}
+          {hasEven && <p className="text-xs text-muted-foreground">Có món chia đều — vẫn thêm được món riêng cho người ăn món khác.</p>}<Button variant="outline" className="h-12" onClick={() => setItems(l => [...l, { key: newKey(), name: '', price: 0, member_ids: [] }])}><Plus/>Thêm món thủ công</Button>
           {dishes.length > 0 && <datalist id="dish-suggestions">{dishes.map(d => <option key={d.id} value={d.name}/>)}</datalist>}
         </div>
       </div>
