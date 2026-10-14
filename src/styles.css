@@ -751,7 +751,7 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 .price-preset { min-height: 38px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: 13px; font-weight: 600; transition: background-color .15s, border-color .15s, color .15s; }
 .price-preset:hover { border-color: var(--primary); }
 .price-preset:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-.price-preset[data-selected="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+.price-presets .price-preset[data-selected="true"], .batch-days .price-preset[data-selected="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
 .batch-list { display: grid; gap: 16px; }
 .batch-card { display: grid; gap: 16px; }
 .batch-head { display: flex; align-items: flex-start; gap: 12px; }
