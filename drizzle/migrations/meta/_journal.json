@@ -15,6 +15,13 @@
       "when": 1791908191524,
       "tag": "0001_add_dish_icons",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791942843024,
+      "tag": "0002_batch_jobs",
+      "breakpoints": true
     }
   ]
 }

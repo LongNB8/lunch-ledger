@@ -14,6 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
+      batch_job_runs: {
+        Row: {
+          debtor_count: number
+          finished_at: string | null
+          id: string
+          job_id: string
+          message: string
+          owner_id: string
+          recipient: string
+          started_at: string
+          status: string
+          total_debt: number
+          trigger_type: string
+        }
+        Insert: {
+          debtor_count?: number
+          finished_at?: string | null
+          id?: string
+          job_id: string
+          message?: string
+          owner_id: string
+          recipient?: string
+          started_at?: string
+          status?: string
+          total_debt?: number
+          trigger_type: string
+        }
+        Update: {
+          debtor_count?: number
+          finished_at?: string | null
+          id?: string
+          job_id?: string
+          message?: string
+          owner_id?: string
+          recipient?: string
+          started_at?: string
+          status?: string
+          total_debt?: number
+          trigger_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_job_runs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "batch_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      batch_jobs: {
+        Row: {
+          code: string
+          created_at: string
+          days_of_week: number[]
+          description: string
+          id: string
+          is_active: boolean
+          last_run_at: string | null
+          name: string
+          owner_id: string
+          run_time: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          days_of_week?: number[]
+          description?: string
+          id?: string
+          is_active?: boolean
+          last_run_at?: string | null
+          name: string
+          owner_id: string
+          run_time?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          days_of_week?: number[]
+          description?: string
+          id?: string
+          is_active?: boolean
+          last_run_at?: string | null
+          name?: string
+          owner_id?: string
+          run_time?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      batch_runtime_secrets: {
+        Row: {
+          id: number
+          token: string
+        }
+        Insert: {
+          id?: number
+          token: string
+        }
+        Update: {
+          id?: number
+          token?: string
+        }
+        Relationships: []
+      }
       dishes: {
         Row: {
           created_at: string
@@ -265,7 +372,7 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      schedule_batch_job: { Args: { _job_id: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
