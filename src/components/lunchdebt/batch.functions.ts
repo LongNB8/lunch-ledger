@@ -4,8 +4,17 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { runDebtReport } from './batch.server';
 
 export const listBatchJobs = createServerFn({ method: 'GET' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
-  const { data, error } = await context.supabase.from('batch_jobs').select('id,code,name,description,days_of_week,run_time,is_active,last_run_at,updated_at').order('created_at');
+  const read = () => context.supabase.from('batch_jobs').select('id,code,name,description,days_of_week,run_time,is_active,last_run_at,updated_at').order('created_at');
+  let { data, error } = await read();
   if (error) throw new Error('Không tải được danh sách batch.');
+  if (!data?.length) {
+    // Every account gets its own fixed debt-report batch; users can only edit it, never create/delete.
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const ins = await supabaseAdmin.from('batch_jobs').insert({ code: `debt-report-${context.userId}`, owner_id: context.userId, name: 'Gửi báo cáo công nợ', description: 'Gửi email bảng công nợ chưa thanh toán cho admin.', days_of_week: [2, 4], run_time: '15:00' }).select('id').single();
+    if (!ins.error) await supabaseAdmin.rpc('schedule_batch_job', { _job_id: ins.data.id });
+    ({ data, error } = await read());
+    if (error) throw new Error('Không tải được danh sách batch.');
+  }
   return { jobs: data ?? [], recipient: process.env['REPORT_ADMIN_EMAIL'] || 'long17000547@gmail.com' };
 });
 
