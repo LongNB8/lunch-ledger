@@ -16,6 +16,7 @@ import { Route as AdminDishesRouteImport } from './routes/admin.dishes'
 import { Route as AdminLoginsRouteImport } from './routes/admin.logins'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminMealsNewRouteImport } from './routes/admin.meals.new'
+import { Route as ApiPublicBatchRunRouteImport } from './routes/api/public/batch/run'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const AdminMealsNewRoute = AdminMealsNewRouteImport.update({
   path: '/admin/meals/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBatchRunRoute = ApiPublicBatchRunRouteImport.update({
+  id: '/api/public/batch/run',
+  path: '/api/public/batch/run',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
+  '/api/public/batch/run': typeof ApiPublicBatchRunRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
+  '/api/public/batch/run': typeof ApiPublicBatchRunRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/admin/logins': typeof AdminLoginsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/meals/new': typeof AdminMealsNewRoute
+  '/api/public/batch/run': typeof ApiPublicBatchRunRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
+    | '/api/public/batch/run'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
+    | '/api/public/batch/run'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/admin/logins'
     | '/admin/members'
     | '/admin/meals/new'
+    | '/api/public/batch/run'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   AdminLoginsRoute: typeof AdminLoginsRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminMealsNewRoute: typeof AdminMealsNewRoute
+  ApiPublicBatchRunRoute: typeof ApiPublicBatchRunRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMealsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/batch/run': {
+      id: '/api/public/batch/run'
+      path: '/api/public/batch/run'
+      fullPath: '/api/public/batch/run'
+      preLoaderRoute: typeof ApiPublicBatchRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginsRoute: AdminLoginsRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminMealsNewRoute: AdminMealsNewRoute,
+  ApiPublicBatchRunRoute: ApiPublicBatchRunRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
