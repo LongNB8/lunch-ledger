@@ -10,11 +10,16 @@ const ALIASED_KEYS = [
   "REPORT_ADMIN_EMAIL",
 ] as const;
 
+// Values pasted as placeholders like "process.env.SUPABASE_URL_2" are not real credentials.
+export function isRealValue(value: string | undefined): value is string {
+  return !!value && !value.startsWith("process.env");
+}
+
 export function applyEnvAliases() {
   if (typeof process === "undefined" || !process.env) return;
   for (const key of ALIASED_KEYS) {
-    const suffixed = process.env[`${key}_2`];
-    if (suffixed) process.env[key] = suffixed;
+    const suffixed = process.env[`${key}_2`]?.trim();
+    if (isRealValue(suffixed)) process.env[key] = suffixed;
   }
 }
 
