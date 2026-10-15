@@ -987,3 +987,22 @@ a[data-slot=button] { border-radius: var(--control-radius); }
  .bottom-add { width: 36px; height: 30px; border-radius: 11px; box-shadow: 0 6px 14px -6px color-mix(in oklab, var(--primary) 90%, transparent); }
  .page-footer { flex-direction: column; gap: 6px; font-size: 11px; }
 }
+
+/* iOS Safari renders ::-webkit-details-marker as a grid item, which squeezes the summary columns. */
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::marker { content: ""; }
+.daily-meal summary > div { min-width: 0; }
+.daily-meal summary > .table-meal-icon { grid-column: 1; grid-row: 1; }
+.daily-meal summary > div { grid-column: 2; grid-row: 1; }
+.daily-meal summary > strong { grid-column: 3; grid-row: 1; white-space: nowrap; }
+.daily-meal summary > .detail-chevron { grid-column: 4; grid-row: 1; }
+.daily-meal h3 { overflow-wrap: break-word; word-break: normal; }
+@media (max-width: 767px) {
+  .daily-meal summary { grid-template-columns: 36px minmax(0,1fr) 16px; gap: 6px 12px; align-items: start; }
+  .daily-meal summary > .table-meal-icon { grid-row: 1 / span 2; }
+  .daily-meal summary > div { grid-column: 2; grid-row: 1; }
+  .daily-meal summary > strong { grid-column: 2; grid-row: 2; }
+  .daily-meal summary > .detail-chevron { grid-column: 3; grid-row: 1; align-self: center; }
+  .daily-items { padding-left: 0; }
+}
