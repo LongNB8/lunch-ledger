@@ -3,9 +3,9 @@
 @source "../src";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
-  --font-sans: 'Figtree', sans-serif;
-  --font-display: 'Outfit', sans-serif;
-  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px; --radius-xl: 8px;
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: 8px; --radius-md: 10px; --radius-lg: 12px; --radius-xl: 16px;
   --color-background: var(--background); --color-foreground: var(--foreground);
   --color-card: var(--card); --color-card-foreground: var(--foreground);
   --color-popover: var(--card); --color-popover-foreground: var(--foreground);
@@ -770,3 +770,220 @@ button[data-slot=button] { border-radius: 6px; font-weight: 600; }
 .meal-edit-dialog { max-height: 90dvh; display: flex; flex-direction: column; }
 .meal-edit-body { display: grid; gap: 12px; overflow-y: auto; padding-right: 4px; }
 .meal-edit-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* ==========================================================================
+   LunchDebt v2 — warm paper, emerald ink, soft rounded surfaces
+   ========================================================================== */
+:root {
+ --background: oklch(.975 .006 95); --foreground: oklch(.24 .018 165);
+ --card: oklch(1 0 0); --primary: oklch(.52 .115 162); --primary-foreground: oklch(.995 .004 95);
+ --secondary: oklch(.958 .03 160); --muted: oklch(.962 .007 95); --muted-foreground: oklch(.5 .018 165);
+ --border: oklch(.912 .01 100); --destructive: oklch(.6 .19 25);
+ --warning: oklch(.7 .15 58); --warning-soft: oklch(.965 .035 75);
+ --info: oklch(.58 .13 245); --info-soft: oklch(.958 .025 245);
+ --success: var(--primary);
+ --surface-radius: 18px; --control-radius: 12px;
+ --shadow-soft: 0 1px 2px oklch(.25 .02 165 / .04), 0 8px 24px -12px oklch(.25 .02 165 / .14);
+ --shadow-lift: 0 2px 4px oklch(.25 .02 165 / .05), 0 18px 40px -18px oklch(.25 .02 165 / .26);
+ --cover-overlay: linear-gradient(100deg, oklch(.2 .045 165 / .94) 0%, oklch(.22 .05 165 / .72) 48%, oklch(.22 .05 165 / .2) 100%);
+ --radius: 12px;
+}
+body { font-size: 15px; line-height: 1.55; background: var(--background); }
+h1,h2,h3,h4 { text-wrap: balance; }
+:focus-visible { outline-color: var(--primary); }
+button[data-slot=button] { border-radius: var(--control-radius); font-weight: 600; transition: background-color .15s, color .15s, box-shadow .15s, transform .1s; }
+button[data-slot=button]:active { transform: scale(.98); }
+a[data-slot=button] { border-radius: var(--control-radius); }
+
+/* Shell */
+.app-sidebar { width: 256px; background: var(--card); border-right: 1px solid var(--border); padding: 24px 16px 20px; overflow-y: auto; }
+.brand { font-size: 22px; font-weight: 800; letter-spacing: -.02em; gap: 10px; }
+.brand-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--primary); box-shadow: 0 6px 16px -6px color-mix(in oklab, var(--primary) 70%, transparent); }
+.brand-sub { font-size: 12px; margin: 12px 4px 28px; line-height: 1.6; color: var(--muted-foreground); }
+.nav-caption { font-size: 11px; letter-spacing: .06em; margin: 0 12px 10px; color: var(--muted-foreground); }
+.app-sidebar .side-link { min-height: 44px; font-size: 14px; font-weight: 500; margin-bottom: 2px; border-radius: var(--control-radius); color: var(--muted-foreground); box-shadow: none; }
+.app-sidebar .side-link:hover { background: var(--muted); color: var(--foreground); }
+.app-sidebar .side-link[data-active=true] { background: var(--primary); color: var(--primary-foreground); font-weight: 600; box-shadow: 0 8px 18px -10px color-mix(in oklab, var(--primary) 80%, transparent); }
+.app-sidebar .side-link[data-active=true]::after { background: var(--primary-foreground); }
+.app-sidebar .workspace { border-top: 1px solid var(--border); padding-top: 16px; }
+.app-sidebar .workspace-card { background: var(--muted); border-radius: 14px; padding: 12px; }
+.app-main { margin-left: 256px; }
+.topbar { position: sticky; top: 0; z-index: 25; height: 68px; padding: 0 32px; background: color-mix(in oklab, var(--background) 82%, transparent); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--border); }
+.topbar-label { font-size: 15px; font-weight: 700; color: var(--foreground); }
+.topbar .notification { border-radius: 12px; background: var(--card); border: 1px solid var(--border); }
+.date-label { font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--border); }
+.page-content { max-width: 1320px; padding: 32px 32px 28px; }
+
+/* Headings */
+.page-heading,.member-page-heading { margin-bottom: 28px; align-items: end; }
+.page-eyebrow,.member-eyebrow { display: inline-flex; align-items: center; gap: 6px; width: fit-content; font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--primary); background: var(--secondary); border-radius: 999px; padding: 5px 11px; margin-bottom: 14px; }
+.page-heading h1,.member-page-heading h1 { font-size: 32px; font-weight: 800; letter-spacing: -.025em; line-height: 1.2; }
+.page-heading p,.member-page-heading p { font-size: 15px; margin-top: 8px; line-height: 1.6; max-width: 62ch; }
+.primary-action,.member-primary { min-height: 46px; font-size: 14px; padding-inline: 20px; border-radius: var(--control-radius); box-shadow: 0 8px 20px -10px color-mix(in oklab, var(--primary) 85%, transparent); }
+.section-heading h2,.debt-toolbar h2 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.section-heading a { font-size: 13px; font-weight: 600; padding: 6px 10px; border-radius: 999px; background: var(--secondary); }
+
+/* Shared surfaces */
+.stat-card,.meal-card,.debt-list,.data-table-wrap,.member-card,.member-mobile-card,.daily-meal,.debt-account,.quick-band,.meal-item,.batch-card,[data-slot=card] { border-radius: var(--surface-radius); border: 1px solid var(--border); background: var(--card); box-shadow: var(--shadow-soft); }
+.pill { border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; }
+.avatar { border-radius: 12px; font-weight: 700; }
+.table-meal-icon { border-radius: 12px; background: var(--secondary); color: var(--primary); border: 0; }
+
+/* Home */
+.home-intro { margin-bottom: 24px; }
+.home-banner { border-radius: 24px; min-height: 270px; box-shadow: var(--shadow-lift); }
+.home-banner>img { object-position: 70% 55%; }
+.home-banner h2 { font-size: 36px; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
+.home-eyebrow { display: inline-block; font-size: 11px; letter-spacing: .08em; padding: 5px 11px; border-radius: 999px; background: oklch(1 0 0 / .14); backdrop-filter: blur(6px); }
+.home-banner p { font-size: 14px; opacity: .9; }
+.home-today h2 { font-weight: 700; letter-spacing: -.01em; }
+.home-today>button,.home-today>a { border-radius: var(--control-radius); }
+.stat-grid { gap: 16px; margin-bottom: 28px; }
+.stat-card { padding: 20px; border-top: 1px solid var(--border); transition: box-shadow .2s, transform .2s; }
+.stat-card:hover { box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+.stat-top { font-size: 13px; font-weight: 500; }
+.stat-icon { width: 40px; height: 40px; border-radius: 12px; }
+.live-stats .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.stat-note { font-size: 12px; }
+.overview-columns { gap: 24px; align-items: start; }
+.overview-columns>section,.overview-columns>div { min-width: 0; }
+.home-meal-row { padding: 16px 14px; margin-inline: -14px; border-radius: 14px; border-bottom: 1px solid var(--border); }
+.home-meal-row:hover { background: var(--card); box-shadow: var(--shadow-soft); }
+.home-meal-row h3 { font-size: 15px; font-weight: 600; }
+.home-meal-row>strong { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.debt-list { padding: 4px 18px; }
+.debt-row { padding: 16px 0; }
+.debt-amount { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Sign-in card */
+.member-signin { max-width: 480px; margin: 28px auto; padding: 32px; background: var(--card); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow-lift); }
+.member-signin h2 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.member-signin p { font-size: 14px; }
+.signin-form { gap: 14px; }
+.signin-form input,.password-field { border-radius: var(--control-radius); }
+.password-field:focus-within { outline: 0; border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 14%, transparent); }
+
+/* Forms */
+.field { font-size: 14px; font-weight: 600; }
+.field input,.field select,.field textarea,.search-field,.member-search,.member-toolbar select,.signin-form input,.tax-select { border-radius: var(--control-radius); border-color: var(--border); background: var(--card); min-height: 48px; transition: border-color .15s, box-shadow .15s; }
+.field input:hover,.field select:hover,.search-field:hover,.member-search:hover { border-color: color-mix(in oklab, var(--primary) 30%, var(--border)); }
+.field input:focus,.field select:focus,.field textarea:focus,.search-field:focus,.member-search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 14%, transparent); }
+.meal-builder { gap: 28px; }
+.meal-builder .form-section { background: var(--card); border: 1px solid var(--border); border-radius: var(--surface-radius); box-shadow: var(--shadow-soft); padding: 22px; margin-bottom: 16px; }
+.meal-builder .form-section:first-child { border-top: 1px solid var(--border); padding-top: 22px; }
+.builder-title { font-size: 17px; font-weight: 700; }
+.builder-title>span { width: 30px; height: 30px; border-radius: 10px; background: var(--primary); color: var(--primary-foreground); font-weight: 700; }
+.meal-item { border-left: 1px solid var(--border); box-shadow: none; background: var(--muted); padding: 16px; }
+.meal-preset,.tax-preset,.price-preset,[role=radiogroup] .meal-check { border-radius: var(--control-radius); }
+.tax-presets { border-radius: 14px; }
+.dish-empty { border-radius: var(--surface-radius); }
+.meal-builder .meal-reconciliation { border-top: 1px solid var(--border); }
+.meal-reconciliation { position: relative; overflow: hidden; }
+.meal-reconciliation::before { content: ''; position: absolute; inset: 0 0 auto; height: 4px; background: var(--primary); }
+.recon { border-radius: var(--control-radius); }
+.meal-grand-total dd { font-weight: 800; letter-spacing: -.02em; }
+
+/* Daily ledger */
+.daily-toolbar { padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--surface-radius); box-shadow: var(--shadow-soft); }
+.date-switcher { border-radius: var(--control-radius); background: var(--muted); border: 0; }
+.date-switcher a { border-radius: 10px; }
+.date-presets a { border-radius: 10px; }
+.daily-overview,.debt-overview { border: 0; padding: 26px 28px; border-radius: 24px; background: var(--card); box-shadow: var(--shadow-soft); outline: 1px solid var(--border); outline-offset: -1px; }
+.daily-total h2 { font-weight: 800; letter-spacing: -.03em; color: var(--primary); }
+.daily-count strong { font-weight: 800; }
+.daily-meals { gap: 14px; }
+.daily-meal summary { padding: 18px 20px; }
+.daily-meal summary:hover { background: var(--muted); }
+.daily-meal h3 { font-size: 16px; font-weight: 700; }
+.daily-meal summary strong { font-weight: 800; }
+.daily-meal[data-highlighted=true] { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 18%, transparent), var(--shadow-soft); }
+.daily-items { padding: 0 20px 6px 76px; }
+
+/* Debt */
+.debt-overview { background: linear-gradient(135deg, var(--card), var(--warning-soft)); }
+.debt-overview>div:first-child { border-left: 0; padding-left: 0; }
+.debt-overview h2 { font-size: 44px; font-weight: 800; letter-spacing: -.03em; color: var(--foreground); }
+.debt-cards { gap: 16px; }
+.debt-account { transition: box-shadow .2s; }
+.debt-account:hover { box-shadow: var(--shadow-lift); }
+.debt-account-top h3 { font-size: 17px; font-weight: 700; }
+.debt-due { margin: 20px 22px 16px; padding: 14px 16px; border-radius: 14px; background: var(--muted); }
+.debt-due strong { font-size: 30px; font-weight: 800; letter-spacing: -.02em; color: var(--destructive); }
+.debt-settle { background: var(--secondary); color: var(--primary); }
+.debt-settle:hover { background: color-mix(in oklab, var(--primary) 14%, var(--card)); }
+
+/* Members & tables */
+.member-overview { border: 1px solid var(--border); border-radius: var(--surface-radius); background: var(--card); padding: 18px 22px; box-shadow: var(--shadow-soft); }
+.member-overview strong { font-weight: 800; }
+.member-search { padding-inline: 14px; }
+.data-table-wrap { overflow: auto; }
+.data-table th { background: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--muted-foreground); }
+.data-table td { border-top: 1px solid var(--border); }
+.data-table tbody tr { transition: background .15s; }
+.data-table tbody tr:hover { background: color-mix(in oklab, var(--secondary) 60%, var(--card)); }
+.member-code { border-radius: 8px; font-weight: 600; }
+.member-mobile-card { padding: 18px; }
+.member-empty-icon { border-radius: 16px; }
+.member-dialog,.meal-edit-dialog { border-radius: 24px; }
+.member-success { border-radius: var(--control-radius); }
+.batch-meta { border-radius: 14px; }
+.page-footer { border-top: 1px solid var(--border); font-size: 12px; }
+
+/* Tablet */
+@media (min-width:768px) and (max-width:1100px) {
+ .app-sidebar { width: 220px; padding-inline: 12px; } .app-main { margin-left: 220px; }
+ .page-content,.topbar { padding-inline: 24px; }
+ .page-heading h1,.member-page-heading h1 { font-size: 28px; }
+}
+
+/* Phone */
+@media (max-width:767px) {
+ body { font-size: 15px; }
+ .app-main { margin-left: 0; }
+ .topbar { min-height: 60px; height: auto; padding: max(8px, env(safe-area-inset-top)) 16px 8px; background: color-mix(in oklab, var(--background) 86%, transparent); }
+ .topbar-label { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+ .topbar .notification,.mobile-menu { width: 42px; height: 42px; min-width: 42px; min-height: 42px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); }
+ .topbar-right { gap: 8px; }
+ .page-content { padding: 20px 16px calc(112px + env(safe-area-inset-bottom)); }
+ .page-heading,.member-page-heading { margin-bottom: 20px; }
+ .page-eyebrow,.member-eyebrow { font-size: 10px; margin-bottom: 10px; }
+ .page-heading h1,.member-page-heading h1 { font-size: 26px; }
+ .page-heading p,.member-page-heading p { font-size: 14px; }
+ .home-banner { min-height: 200px; border-radius: 20px; }
+ .home-banner>div,.home-intro .home-banner>div { padding: 22px; }
+ .home-banner h2 { font-size: 28px; max-width: 230px; margin: 12px 0 8px; }
+ .home-today { padding: 20px 0 4px; border-bottom: 0; }
+ .stat-grid { gap: 10px; margin-bottom: 24px; }
+ .stat-card { padding: 14px; border-radius: 16px; }
+ .stat-card:hover { transform: none; }
+ .stat-icon { width: 32px; height: 32px; border-radius: 10px; }
+ .live-stats .stat-value { font-size: 20px; margin-block: 12px 6px; }
+ .home-meal-row { margin-inline: 0; padding: 14px 4px; }
+ .debt-list { padding: 2px 14px; }
+ .section-heading h2,.debt-toolbar h2 { font-size: 18px; }
+ .member-signin { margin: 16px 0 8px; padding: 22px 18px; border-radius: 20px; }
+ .member-signin h2 { font-size: 23px; }
+ .meal-builder .form-section { padding: 18px 16px; border-radius: 16px; margin-bottom: 12px; }
+ .meal-builder .form-section:first-child { padding-top: 18px; }
+ .builder-title { font-size: 16px; margin-bottom: 18px; }
+ .daily-toolbar { padding: 10px; border-radius: 16px; }
+ .daily-overview,.debt-overview { padding: 20px 18px; border-radius: 20px; margin-bottom: 20px; }
+ .daily-total h2 { font-size: 30px; }
+ .debt-overview h2 { font-size: 34px; }
+ .daily-meal summary { padding: 16px; }
+ .daily-items { padding: 0 16px 4px; }
+ .debt-due { margin-inline: 18px; }
+ .debt-due strong { font-size: 28px; }
+ .member-overview { padding: 14px 16px; }
+ .member-mobile-card,.debt-account,.daily-meal { border-radius: 16px; }
+ .member-dialog,.meal-edit-dialog { border-radius: 20px; }
+ .member-drawer { border-radius: 24px 24px 0 0; }
+
+ /* Floating tab bar */
+ .bottom-nav { left: 12px; right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); padding: 6px; gap: 4px; border: 1px solid var(--border); border-radius: 22px; background: color-mix(in oklab, var(--card) 90%, transparent); backdrop-filter: saturate(1.5) blur(16px); -webkit-backdrop-filter: saturate(1.5) blur(16px); box-shadow: var(--shadow-lift); }
+ .bottom-item { min-height: 54px; border-radius: 16px; font-size: 11px; font-weight: 600; gap: 4px; color: var(--muted-foreground); }
+ .bottom-item svg { width: 21px; height: 21px; }
+ .bottom-item[data-active=true] { background: var(--secondary); color: var(--primary); }
+ .bottom-add { width: 36px; height: 30px; border-radius: 11px; box-shadow: 0 6px 14px -6px color-mix(in oklab, var(--primary) 90%, transparent); }
+ .page-footer { flex-direction: column; gap: 6px; font-size: 11px; }
+}
